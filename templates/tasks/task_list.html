@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-10">
+        <h1>TODO list</h1>
+      </div>
+      <div class="col-sm-2">
+        <a class="btn btn-primary" href="{% url 'tasks:task-create' %}">Add task</a>
+      </div>
+    </div>
+  </div>
+  <br>
+  {% for task in tasks %}
+  	<div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-10">
+          <p>
+            <strong>{{ task.content }}</strong>
+
+              {% if task.is_complete %}
+                <strong style="color: green">Done</strong>
+              {% else %}
+                <strong style="color: red">Not done</strong>
+              {% endif %}
+          </p>
+          <p style="font-size: 0.8em">
+            Created: {{ task.date }}
+            {% if task.deadline %}
+            	<span style="color: darkred">{{ task.deadline }}</span>
+            {% endif %}
+          </p>
+          <p style="color: gray">Tags:
+            {% for tag in task.tags.all %}
+              {{ tag }}
+            {% endfor %}
+            <a class="btn-link" href="{% url 'tasks:task-update' pk=task.id %}"><strong>Update</strong></a>
+            <a class="btn-link" href="{% url 'tasks:task-delete' pk=task.id %}"><strong>Delete</strong></a>
+          </p>
+        </div>
+      <div class="col-sm-2">
+        {% if task.is_complete %}
+        	<a class="btn btn-secondary link-to-page" href="{% url 'tasks:task-set-not-complete' pk=task.id %}">Undo</a>
+        {% else %}
+        	<a class="btn btn-success link-to-page" href="{% url 'tasks:task-set-complete' pk=task.id %}">Complete</a>
+        {% endif %}
+
+      </div>
+      </div>
+    </div>
+    <hr>
+  {% endfor %}
+
+{% endblock %}
